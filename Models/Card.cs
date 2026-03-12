@@ -4,16 +4,14 @@ namespace OOPBlackJack.Models
 {
     public class Card
     {
-        public int Id { get; }
         public Suit Suit { get; }
         public Rank Rank { get; }
         public int Value { get; }
         public bool IsFaceUp { get; private set; }
         public string ImagePath { get; }
 
-        public Card(int id, Suit suit, Rank rank, string imagePath)
+        public Card(Suit suit, Rank rank, string imagePath)
         {
-            Id = id;
             Suit = suit;
             Rank = rank;
             Value = (int)rank;
@@ -24,6 +22,11 @@ namespace OOPBlackJack.Models
         public void Flip()
         {
             IsFaceUp = !IsFaceUp;
+        }
+
+        public override string ToString()
+        {
+            return $"{Rank} of {Suit}";
         }
     }
 }
