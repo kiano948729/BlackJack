@@ -6,9 +6,9 @@ namespace OOPBlackJack.Enums
 {
     public enum Suit
     {
-        Spades,
-        Hearts,
-        Diamonds,
-        Clubs
+        SPADES,
+        HEARTS,
+        DIAMONDS,
+        CLUBS
     }
 }

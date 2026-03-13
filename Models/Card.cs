@@ -4,26 +4,38 @@ namespace OOPBlackJack.Models
 {
     public class Card
     {
-        public int Id { get; }
         public Suit Suit { get; }
         public Rank Rank { get; }
-        public int Value { get; }
+        public int Value => GetBlackjackValue();
         public bool IsFaceUp { get; private set; }
         public string ImagePath { get; }
 
-        public Card(int id, Suit suit, Rank rank, string imagePath)
+        public Card(Suit suit, Rank rank, string imagePath)
         {
-            Id = id;
             Suit = suit;
             Rank = rank;
-            Value = (int)rank;
             ImagePath = imagePath;
             IsFaceUp = false;
+        }
+
+        private int GetBlackjackValue()
+        {
+            return Rank switch
+            {
+                Rank.ACE => 11,
+                Rank.JACK or Rank.QUEEN or Rank.KING or Rank.TEN => 10,
+                _ => (int)Rank + 1 
+            };
         }
 
         public void Flip()
         {
             IsFaceUp = !IsFaceUp;
+        }
+
+        public override string ToString()
+        {
+            return $"{Rank} of {Suit}";
         }
     }
 }
