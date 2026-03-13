@@ -6,7 +6,7 @@ namespace OOPBlackJack.Models
     {
         public Suit Suit { get; }
         public Rank Rank { get; }
-        public int Value { get; }
+        public int Value => GetBlackjackValue();
         public bool IsFaceUp { get; private set; }
         public string ImagePath { get; }
 
@@ -14,9 +14,18 @@ namespace OOPBlackJack.Models
         {
             Suit = suit;
             Rank = rank;
-            Value = (int)rank;
             ImagePath = imagePath;
             IsFaceUp = false;
+        }
+
+        private int GetBlackjackValue()
+        {
+            return Rank switch
+            {
+                Rank.ACE => 11,
+                Rank.JACK or Rank.QUEEN or Rank.KING or Rank.TEN => 10,
+                _ => (int)Rank + 1 
+            };
         }
 
         public void Flip()
