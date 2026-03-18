@@ -38,16 +38,10 @@ namespace OOPBlackJack.Models
             }
         }
 
-        // Fisher-Yates shuffle algoritme
+        /// Shuffle deck met centrale helper
         public void Shuffle()
         {
-            for (int i = Cards.Count - 1; i > 0; i--)
-            {
-                int j = random.Next(i + 1);
-                Card temp = Cards[i];
-                Cards[i] = Cards[j];
-                Cards[j] = temp;
-            }
+            ShuffleHelper.Shuffle(Cards);
         }
 
         public Card DrawCard()
