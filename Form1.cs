@@ -10,6 +10,8 @@ namespace OOPBlackJack
         private Shoe shoe;
         private Hand hand;
         private Player player;
+        private Dealer dealer;
+
         public Form1()
         {
             InitializeComponent();
@@ -152,5 +154,27 @@ namespace OOPBlackJack
         {
         }
 
+        private void button2_Click(object sender, EventArgs e)
+        {
+            dealer = new Dealer();
+            dealer.Deal(shoe);
+
+            MessageBox.Show($"Dealer heeft: {dealer.Hand.GetValue()}");
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            
+            if (dealer == null || shoe == null)
+            {
+                MessageBox.Show("Maak eerst dealer en shoe.");
+                return;
+            }
+
+            dealer.PlayTurn(shoe);
+
+            MessageBox.Show($"Dealer eindigt met: {dealer.Hand.GetValue()}");
+        
+        }
     }
 }
