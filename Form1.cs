@@ -1,5 +1,6 @@
 using OOPBlackJack.Models;
 using System.Diagnostics;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
 
 namespace OOPBlackJack
 {
@@ -7,7 +8,8 @@ namespace OOPBlackJack
     {
         private Deck deck;
         private Shoe shoe;
-
+        private Hand hand;
+        private Player player;
         public Form1()
         {
             InitializeComponent();
@@ -30,7 +32,7 @@ namespace OOPBlackJack
             if (!int.TryParse(input, out int numberOfDecks) || numberOfDecks < 1)
             {
                 MessageBox.Show("Ongeldig aantal decks. Er wordt geen shoe aangemaakt.");
-                return; 
+                return;
             }
 
             try
@@ -44,45 +46,6 @@ namespace OOPBlackJack
             }
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            if (shoe == null)
-            {
-                MessageBox.Show("Maak eerst een shoe.");
-                return;
-            }
-
-            if (shoe.CardsRemaining() == 0)
-            {
-                MessageBox.Show("Geen kaarten meer in de shoe.");
-                return;
-            }
-
-            Card card = shoe.DrawCard();
-            string path = card.ImagePath;
-
-            Debug.WriteLine($"Full path: {Path.GetFullPath(path)}");
-
-            MessageBox.Show($"Je trok: {card.Rank} van {card.Suit} (waarde {card.Value})");
-
-            try
-            {
-                if (File.Exists(path))
-                {
-                    pictureBox1.Image = Image.FromFile(path);
-                }
-                else
-                {
-                    MessageBox.Show($"Afbeelding niet gevonden\nPad:\n{path}");
-                    pictureBox1.Image = null;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Afbeelding niet gevonden\n\nPad:\n{path}\n\nError:\n{ex.Message}");
-                pictureBox1.Image = null;
-            }
-        }
 
         private void button3_Click(object sender, EventArgs e)
         {
@@ -97,5 +60,97 @@ namespace OOPBlackJack
             Card topCard = shoe.Cards[0];
             MessageBox.Show($"Shoe geschud\nBovenste kaart is nu: {topCard.Rank} van {topCard.Suit}.");
         }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            player = new Player("Speler", 100);
+            hand = new Hand(10);
+
+            player.AddHand(hand);
+
+            MessageBox.Show("Player en Hand aangemaakt!");
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            if (shoe == null || hand == null)
+            {
+                MessageBox.Show("Maak eerst een shoe en hand!");
+                return;
+            }
+
+            if (shoe.CardsRemaining() == 0)
+            {
+                MessageBox.Show("Geen kaarten meer in de shoe.");
+                return;
+            }
+
+            Card card = shoe.DrawCard();
+            hand.AddCard(card);
+            DisplayHand();
+
+            MessageBox.Show(
+                $"Kaart: {card.Rank} van {card.Suit}\n" +
+                $"Totaal: {hand.GetValue()}\n" +
+                $"Busted: {hand.IsBusted()}"
+            );
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            if (hand == null)
+            {
+                MessageBox.Show("Maak eerst een hand!");
+                return;
+            }
+
+            hand.Stand();
+
+            MessageBox.Show($"Hand staat nu stil.\nCanPlay: {hand.CanPlay}");
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            if (hand == null)
+            {
+                MessageBox.Show("Maak eerst een hand!");
+                return;
+            }
+
+            string cards = "";
+
+            foreach (var c in hand.Cards)
+            {
+                cards += $"{c.Rank} van {c.Suit}\n";
+            }
+
+            MessageBox.Show(
+                $"Kaarten:\n{cards}\n" +
+                $"Totaal: {hand.GetValue()}"
+            );
+        }
+        private void DisplayHand()
+        {
+            flowLayoutPanelHand.Controls.Clear();
+
+            foreach (var card in hand.Cards)
+            {
+                PictureBox pb = new PictureBox();
+                pb.Width = 80;
+                pb.Height = 120;
+                pb.SizeMode = PictureBoxSizeMode.StretchImage;
+
+                if (File.Exists(card.ImagePath))
+                {
+                    pb.Image = Image.FromFile(card.ImagePath);
+                }
+
+                flowLayoutPanelHand.Controls.Add(pb);
+            }
+        }
+        private void flowLayoutPanelHand_Paint(object sender, PaintEventArgs e)
+        {
+        }
+
     }
 }
