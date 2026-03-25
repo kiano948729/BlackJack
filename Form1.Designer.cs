@@ -2,15 +2,8 @@
 {
     partial class Form1
     {
-        /// <summary>
-        ///  Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        ///  Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -20,145 +13,117 @@
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
-
-        /// <summary>
-        ///  Required method for Designer support - do not modify
-        ///  the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
-            button1 = new Button();
-            button3 = new Button();
-            button4 = new Button();
-            button5 = new Button();
-            button6 = new Button();
-            button7 = new Button();
-            flowLayoutPanelHand = new FlowLayoutPanel();
-            button2 = new Button();
-            button8 = new Button();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            buttonStart = new Button();
+            buttonHit = new Button();
+            buttonStand = new Button();
+            flowLayoutPanel1 = new FlowLayoutPanel();
+            flowLayoutPanelDealer = new FlowLayoutPanel();
+            flowLayoutPanel2 = new FlowLayoutPanel();
+            flowLayoutPanel3 = new FlowLayoutPanel();
+            flowLayoutPanel4 = new FlowLayoutPanel();
             SuspendLayout();
             // 
-            // button1
+            // buttonStart
             // 
-            button1.Location = new Point(147, 237);
-            button1.Name = "button1";
-            button1.Size = new Size(171, 48);
-            button1.TabIndex = 0;
-            button1.Text = "button1";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
+            buttonStart.Location = new Point(50, 530);
+            buttonStart.Name = "buttonStart";
+            buttonStart.Size = new Size(150, 45);
+            buttonStart.TabIndex = 0;
+            buttonStart.Text = "Start Game";
+            buttonStart.UseVisualStyleBackColor = true;
+            buttonStart.Click += buttonStart_Click;
             // 
-            // button3
+            // buttonHit
             // 
-            button3.Location = new Point(536, 239);
-            button3.Name = "button3";
-            button3.Size = new Size(189, 46);
-            button3.TabIndex = 3;
-            button3.Text = "button3";
-            button3.UseVisualStyleBackColor = true;
-            button3.Click += button3_Click;
+            buttonHit.Location = new Point(512, 530);
+            buttonHit.Name = "buttonHit";
+            buttonHit.Size = new Size(150, 45);
+            buttonHit.TabIndex = 1;
+            buttonHit.Text = "Hit";
+            buttonHit.UseVisualStyleBackColor = true;
+            buttonHit.Click += buttonHit_Click;
             // 
-            // button4
+            // buttonStand
             // 
-            button4.Location = new Point(147, 313);
-            button4.Name = "button4";
-            button4.Size = new Size(171, 46);
-            button4.TabIndex = 4;
-            button4.Text = "button4";
-            button4.UseVisualStyleBackColor = true;
-            button4.Click += button4_Click;
+            buttonStand.Location = new Point(668, 530);
+            buttonStand.Name = "buttonStand";
+            buttonStand.Size = new Size(150, 45);
+            buttonStand.TabIndex = 2;
+            buttonStand.Text = "Stand";
+            buttonStand.UseVisualStyleBackColor = true;
+            buttonStand.Click += buttonStand_Click;
             // 
-            // button5
+            // flowLayoutPanel1
             // 
-            button5.Location = new Point(342, 313);
-            button5.Name = "button5";
-            button5.Size = new Size(167, 46);
-            button5.TabIndex = 5;
-            button5.Text = "button5";
-            button5.UseVisualStyleBackColor = true;
-            button5.Click += button5_Click;
+            flowLayoutPanel1.BackColor = Color.Transparent;
+            flowLayoutPanel1.Location = new Point(131, 256);
+            flowLayoutPanel1.Name = "flowLayoutPanel1";
+            flowLayoutPanel1.Size = new Size(262, 120);
+            flowLayoutPanel1.TabIndex = 3;
             // 
-            // button6
+            // flowLayoutPanelDealer
             // 
-            button6.Location = new Point(541, 313);
-            button6.Name = "button6";
-            button6.Size = new Size(184, 44);
-            button6.TabIndex = 6;
-            button6.Text = "button6";
-            button6.UseVisualStyleBackColor = true;
-            button6.Click += button6_Click;
+            flowLayoutPanelDealer.BackColor = Color.Transparent;
+            flowLayoutPanelDealer.Location = new Point(449, 382);
+            flowLayoutPanelDealer.Name = "flowLayoutPanelDealer";
+            flowLayoutPanelDealer.Size = new Size(340, 142);
+            flowLayoutPanelDealer.TabIndex = 8;
             // 
-            // button7
+            // flowLayoutPanel2
             // 
-            button7.Location = new Point(147, 379);
-            button7.Name = "button7";
-            button7.Size = new Size(171, 40);
-            button7.TabIndex = 7;
-            button7.Text = "button7";
-            button7.UseVisualStyleBackColor = true;
-            button7.Click += button7_Click;
+            flowLayoutPanel2.BackColor = Color.Transparent;
+            flowLayoutPanel2.Location = new Point(399, 256);
+            flowLayoutPanel2.Name = "flowLayoutPanel2";
+            flowLayoutPanel2.Size = new Size(262, 120);
+            flowLayoutPanel2.TabIndex = 4;
             // 
-            // flowLayoutPanelHand
+            // flowLayoutPanel3
             // 
-            flowLayoutPanelHand.AccessibleName = "flowLayoutPanelHand";
-            flowLayoutPanelHand.AutoScroll = true;
-            flowLayoutPanelHand.Location = new Point(147, 18);
-            flowLayoutPanelHand.Name = "flowLayoutPanelHand";
-            flowLayoutPanelHand.Size = new Size(564, 189);
-            flowLayoutPanelHand.TabIndex = 8;
-            flowLayoutPanelHand.Paint += flowLayoutPanelHand_Paint;
+            flowLayoutPanel3.BackColor = Color.Transparent;
+            flowLayoutPanel3.Location = new Point(667, 256);
+            flowLayoutPanel3.Name = "flowLayoutPanel3";
+            flowLayoutPanel3.Size = new Size(262, 120);
+            flowLayoutPanel3.TabIndex = 5;
             // 
-            // button2
+            // flowLayoutPanel4
             // 
-            button2.Location = new Point(342, 237);
-            button2.Name = "button2";
-            button2.Size = new Size(167, 48);
-            button2.TabIndex = 9;
-            button2.Text = "button2";
-            button2.UseVisualStyleBackColor = true;
-            button2.Click += button2_Click;
-            // 
-            // button8
-            // 
-            button8.Location = new Point(345, 377);
-            button8.Name = "button8";
-            button8.Size = new Size(164, 42);
-            button8.TabIndex = 10;
-            button8.Text = "button8";
-            button8.UseVisualStyleBackColor = true;
-            button8.Click += button8_Click;
+            flowLayoutPanel4.BackColor = Color.Transparent;
+            flowLayoutPanel4.Location = new Point(935, 256);
+            flowLayoutPanel4.Name = "flowLayoutPanel4";
+            flowLayoutPanel4.Size = new Size(262, 120);
+            flowLayoutPanel4.TabIndex = 6;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.ForestGreen;
-            ClientSize = new Size(800, 450);
-            Controls.Add(button8);
-            Controls.Add(button2);
-            Controls.Add(flowLayoutPanelHand);
-            Controls.Add(button7);
-            Controls.Add(button6);
-            Controls.Add(button5);
-            Controls.Add(button4);
-            Controls.Add(button3);
-            Controls.Add(button1);
+            BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
+            ClientSize = new Size(1218, 629);
+            Controls.Add(flowLayoutPanel4);
+            Controls.Add(flowLayoutPanel3);
+            Controls.Add(flowLayoutPanel2);
+            Controls.Add(buttonStart);
+            Controls.Add(buttonHit);
+            Controls.Add(buttonStand);
+            Controls.Add(flowLayoutPanel1);
+            Controls.Add(flowLayoutPanelDealer);
             Name = "Form1";
-            Text = "Form1";
+            Text = "Blackjack (Dealer View)";
             ResumeLayout(false);
         }
 
-        #endregion
+        private Button buttonStart;
+        private Button buttonHit;
+        private Button buttonStand;
 
-        private Button button1;
-        private Button button3;
-        private Button button4;
-        private Button button5;
-        private Button button6;
-        private Button button7;
-        private FlowLayoutPanel flowLayoutPanelHand;
-        private Button button2;
-        private Button button8;
+        private FlowLayoutPanel flowLayoutPanel1;
+        private FlowLayoutPanel flowLayoutPanelDealer;
+        private FlowLayoutPanel flowLayoutPanel2;
+        private FlowLayoutPanel flowLayoutPanel3;
+        private FlowLayoutPanel flowLayoutPanel4;
     }
 }
