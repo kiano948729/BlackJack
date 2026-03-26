@@ -17,11 +17,11 @@ namespace OOPBlackJack
             InitializeComponent();
         }
 
-        // START GAME
+        //START GAME
         private void buttonStart_Click(object sender, EventArgs e)
         {
-            string inputPlayers = Microsoft.VisualBasic.Interaction.InputBox("Aantal spelers (1-5)", "Start spel");
-            if (!int.TryParse(inputPlayers, out int players) || players < 1 || players > 5)
+            string inputPlayers = Microsoft.VisualBasic.Interaction.InputBox("Aantal spelers (1-4)", "Start spel");
+            if (!int.TryParse(inputPlayers, out int players) || players < 1 || players > 4)
             {
                 MessageBox.Show("Ongeldig aantal spelers");
                 return;
@@ -36,42 +36,35 @@ namespace OOPBlackJack
 
             table = new Table(decks, players);
 
-            table.StartRound(); 
+            table.StartRound();
+
             DisplayAll();
             UpdateTitle();
         }
 
         private void buttonHit_Click(object sender, EventArgs e)
         {
-            if (table == null || table.State != GameState.PLAYERTURN) return;
+            if (table == null || table.State != GameState.DEALERTURN) return;
 
-            table.PlayerHit();
+            table.DealerHit();
+
             DisplayAll();
             UpdateTitle();
-
-            if (table.State == GameState.ROUNDFINISHED)
-            {
-                MessageBox.Show(table.GetResults());
-                UpdateTitle();
-            }
         }
 
         private void buttonStand_Click(object sender, EventArgs e)
         {
-            if (table == null || table.State != GameState.PLAYERTURN) return;
+            if (table == null || table.State != GameState.DEALERTURN) return;
 
-            table.PlayerStand();
+            table.DealerStand();
+
             DisplayAll();
             UpdateTitle();
 
-            if (table.State == GameState.ROUNDFINISHED)
-            {
-                MessageBox.Show(table.GetResults());
-                UpdateTitle();
-            }
+            MessageBox.Show(table.GetResults());
         }
 
-        // UI UPDATE
+        //UI UPDATE
         private void DisplayAll()
         {
             if (table == null) return;

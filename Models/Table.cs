@@ -11,14 +11,13 @@ namespace OOPBlackJack.Models
         public List<Player> Players { get; private set; }
 
         public GameState State { get; private set; }
-
         public int Points { get; private set; }
-        public int ActivePlayerIndex { get; private set; }
+
 
         public Table(int shoeSize, int amountPlayers)
         {
-            if (amountPlayers < 1 || amountPlayers > 5)
-                throw new ArgumentException("Aantal spelers moet tussen 1 en 5 liggen.");
+            if (amountPlayers < 1 || amountPlayers > 4)
+                throw new ArgumentException("Aantal spelers moet tussen 1 en 4 liggen.");
 
             Shoe = new Shoe(shoeSize);
             Dealer = new Dealer();
@@ -33,7 +32,6 @@ namespace OOPBlackJack.Models
 
             State = GameState.WAITING;
             Points = 0;
-            ActivePlayerIndex = 0;
         }
 
         public void StartRound()
@@ -43,6 +41,7 @@ namespace OOPBlackJack.Models
             foreach (var player in Players)
             {
                 player.Hands.Clear();
+
                 Hand hand = new Hand(10);
                 player.AddHand(hand);
 
@@ -52,62 +51,46 @@ namespace OOPBlackJack.Models
 
             Dealer.Deal(Shoe);
 
-            ActivePlayerIndex = 0;
-            State = GameState.PLAYERTURN;
+            PlayPlayers(); 
+
+            State = GameState.DEALERTURN;
         }
 
-        public Player GetActivePlayer()
+        private void PlayPlayers()
         {
-            if (ActivePlayerIndex < Players.Count)
-                return Players[ActivePlayerIndex];
-
-            return null;
-        }
-
-        public void NextMove()
-        {
-            if (State == GameState.PLAYERTURN)
+            foreach (var player in Players)
             {
-                ActivePlayerIndex++;
+                var hand = player.Hands[0];
 
-                if (ActivePlayerIndex >= Players.Count)
+                while (hand.GetValue() < 21)
                 {
-                    State = GameState.DEALERTURN;
-                    DealerTurn();
+                    if(hand.GetValue() == 11)
+                    {
+
+                    }
+                    hand.AddCard(Shoe.DrawCard());
                 }
+
+                hand.Stand();
             }
         }
 
-        public void PlayerHit()
+        public void DealerHit()
         {
-            if (State != GameState.PLAYERTURN) return;
+            if (State != GameState.DEALERTURN) return;
 
-            var player = GetActivePlayer();
-            var hand = player.Hands[0];
+            Dealer.Hand.AddCard(Shoe.DrawCard());
 
-            hand.AddCard(Shoe.DrawCard());
-
-            if (hand.IsBusted())
+            if (Dealer.Hand.IsBusted())
             {
-                Points -= 1;
-                NextMove();
+                State = GameState.ROUNDFINISHED;
+                CheckResults();
             }
         }
 
-        public void PlayerStand()
+        public void DealerStand()
         {
-            if (State != GameState.PLAYERTURN) return;
-
-            GetActivePlayer().Hands[0].Stand();
-            NextMove();
-        }
-
-        private void DealerTurn()
-        {
-            while (Dealer.Hand.GetValue() < 17)
-            {
-                Dealer.Hand.AddCard(Shoe.DrawCard());
-            }
+            if (State != GameState.DEALERTURN) return;
 
             State = GameState.ROUNDFINISHED;
             CheckResults();
@@ -116,49 +99,31 @@ namespace OOPBlackJack.Models
         private void CheckResults()
         {
             int dealerTotal = Dealer.Hand.GetValue();
+            bool dealerBusted = Dealer.Hand.IsBusted();
 
-            foreach (var player in Players)
-            {
-                var hand = player.Hand;
-
-                if (hand.IsBusted())
-                {
-                    Points -= 1;
-                }
-                else if (dealerTotal > 21 || hand.GetValue() > dealerTotal)
-                {
-                    Points += 1;
-                }
-                else if (hand.GetValue() < dealerTotal)
-                {
-                    Points -= 1;
-                }
-            }
-        }
-
-        public void Reset()
-        {
-            Shoe = new Shoe(Shoe.CardsRemaining());
-            Dealer.Reset();
-            Players.Clear();
-
-            State = GameState.WAITING;
-            Points = 0;
-        }
-        public void PlayPlayers()
-        {
             foreach (var player in Players)
             {
                 var hand = player.Hands[0];
 
-                while (hand.GetValue() < 17)
+                if (hand.IsBusted())
                 {
-                    hand.AddCard(Shoe.DrawCard());
+                    Points += 1;
                 }
-
-                hand.Stand();
+                else if (dealerBusted)
+                {
+                    Points -= 1;
+                }
+                else if (dealerTotal > hand.GetValue())
+                {
+                    Points += 1;
+                }
+                else if (dealerTotal < hand.GetValue())
+                {
+                    Points -= 1;
+                }
             }
         }
+
         public string GetResults()
         {
             string results = "";
@@ -173,31 +138,42 @@ namespace OOPBlackJack.Models
                 string result;
 
                 if (hand.IsBusted())
-                {
                     result = "verliest (busted)";
-                }
                 else if (dealerBusted)
-                {
                     result = "wint (dealer busted)";
-                }
-                else if (playerValue > dealerValue)
-                {
-                    result = "wint";
-                }
-                else if (playerValue < dealerValue)
-                {
+                else if (dealerValue > playerValue)
                     result = "verliest";
-                }
+                else if (dealerValue < playerValue)
+                    result = "wint";
                 else
-                {
                     result = "gelijkspel";
-                }   
 
                 results += $"{player.Name}: {playerValue} -> {result}\n";
             }
 
             results += $"\nDealer: {dealerValue}";
             return results;
+        }
+
+        public void Reset()
+        {
+            Shoe = new Shoe(1);
+            Dealer.Reset();
+            Players.Clear();
+
+            State = GameState.WAITING;
+            Points = 0;
+        }
+
+        public Player GetActivePlayer()
+        {
+            if (State == GameState.DEALERTURN)
+                return null;
+
+            if (Players.Count > 0)
+                return Players[0]; 
+
+            return null;
         }
     }
 }
