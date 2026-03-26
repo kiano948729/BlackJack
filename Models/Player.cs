@@ -7,6 +7,7 @@
         public int Balance { get; private set; }
         public int InsuranceBet { get; private set; }
 
+        public Hand Hand => Hands[0];
         public Player(string name, int balance)
         {
             Name = name;
