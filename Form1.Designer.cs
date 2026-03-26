@@ -67,9 +67,9 @@
             // flowLayoutPanelDealer
             // 
             flowLayoutPanelDealer.BackColor = Color.Transparent;
-            flowLayoutPanelDealer.Location = new Point(449, 382);
+            flowLayoutPanelDealer.Location = new Point(433, 382);
             flowLayoutPanelDealer.Name = "flowLayoutPanelDealer";
-            flowLayoutPanelDealer.Size = new Size(340, 142);
+            flowLayoutPanelDealer.Size = new Size(496, 142);
             flowLayoutPanelDealer.TabIndex = 8;
             // 
             // flowLayoutPanel2
