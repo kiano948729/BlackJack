@@ -24,6 +24,7 @@
             flowLayoutPanel2 = new FlowLayoutPanel();
             flowLayoutPanel3 = new FlowLayoutPanel();
             flowLayoutPanel4 = new FlowLayoutPanel();
+            buttonFlip = new Button();
             SuspendLayout();
             // 
             // buttonStart
@@ -67,7 +68,7 @@
             // flowLayoutPanelDealer
             // 
             flowLayoutPanelDealer.BackColor = Color.Transparent;
-            flowLayoutPanelDealer.Location = new Point(433, 382);
+            flowLayoutPanelDealer.Location = new Point(378, 382);
             flowLayoutPanelDealer.Name = "flowLayoutPanelDealer";
             flowLayoutPanelDealer.Size = new Size(496, 142);
             flowLayoutPanelDealer.TabIndex = 8;
@@ -96,6 +97,16 @@
             flowLayoutPanel4.Size = new Size(262, 120);
             flowLayoutPanel4.TabIndex = 6;
             // 
+            // buttonFlip
+            // 
+            buttonFlip.Location = new Point(356, 530);
+            buttonFlip.Name = "buttonFlip";
+            buttonFlip.Size = new Size(150, 45);
+            buttonFlip.TabIndex = 9;
+            buttonFlip.Text = "Flip";
+            buttonFlip.UseVisualStyleBackColor = true;
+            buttonFlip.Click += buttonFlip_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -103,6 +114,7 @@
             BackColor = Color.ForestGreen;
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             ClientSize = new Size(1218, 629);
+            Controls.Add(buttonFlip);
             Controls.Add(flowLayoutPanel4);
             Controls.Add(flowLayoutPanel3);
             Controls.Add(flowLayoutPanel2);
@@ -125,5 +137,6 @@
         private FlowLayoutPanel flowLayoutPanel2;
         private FlowLayoutPanel flowLayoutPanel3;
         private FlowLayoutPanel flowLayoutPanel4;
+        private Button buttonFlip;
     }
 }

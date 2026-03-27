@@ -16,13 +16,21 @@
 
         public void Deal(Shoe shoe)
         {
-            Hand.AddCard(shoe.DrawCard());
-            Hand.AddCard(shoe.DrawCard());
+            var firstCard = shoe.DrawCard();
+            //1e kaart wordt geflipt
+            firstCard.Flip();
+            Hand.AddCard(firstCard);
+
+            var secondCard = shoe.DrawCard();
+            //2e kaart blijft facedown
+            Hand.AddCard(secondCard);
         }
 
-        public void HitCard(Card card)
+        public void Hit(Shoe shoe)
         {
-            Hand.AddCard(card);
+            var newCard = shoe.DrawCard();
+            newCard.Flip();
+            Hand.AddCard(newCard);
         }
 
         public void Stand()
@@ -30,15 +38,12 @@
             Hand.Stand();
         }
 
-        public void PlayTurn(Shoe shoe)
+        public void FlipSecondCard()
         {
-            //dealer moet blijven hitten tot 17
-            while (Hand.GetValue() < 17)
+            if (Hand.Cards.Count >= 2)
             {
-                Hand.AddCard(shoe.DrawCard());
+                Hand.Cards[1].Flip();
             }
-
-            Stand();
         }
     }
 }

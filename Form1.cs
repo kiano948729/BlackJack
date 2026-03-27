@@ -64,6 +64,15 @@ namespace OOPBlackJack
             MessageBox.Show(table.GetResults());
         }
 
+        private void buttonFlip_Click(object sender, EventArgs e)
+        {
+            if (table == null || table.Dealer.Hand.Cards.Count < 2) return;
+
+            table.Dealer.FlipSecondCard();
+
+            DisplayAll();
+        }
+
         //UI UPDATE
         private void DisplayAll()
         {
@@ -102,9 +111,15 @@ namespace OOPBlackJack
                 SizeMode = PictureBoxSizeMode.StretchImage
             };
 
-            if (File.Exists(card.ImagePath))
+            string path = card.IsFaceUp ? card.ImagePath : "PNG-cards-1.3/face_down.png";
+
+            if (File.Exists(path))
             {
-                pb.Image = Image.FromFile(card.ImagePath);
+                pb.Image = Image.FromFile(path);
+            }
+            else
+            {
+                pb.BackColor = Color.Green;
             }
 
             return pb;
