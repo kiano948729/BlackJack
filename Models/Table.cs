@@ -45,8 +45,17 @@ namespace OOPBlackJack.Models
                 Hand hand = new Hand(10);
                 player.AddHand(hand);
 
-                hand.AddCard(Shoe.DrawCard());
-                hand.AddCard(Shoe.DrawCard());
+                var card1 = Shoe.DrawCard();
+                card1.Flip();
+                hand.AddCard(card1);
+
+                var card2 = Shoe.DrawCard();
+                card2.Flip();
+                hand.AddCard(card2);
+
+                var newCard = Shoe.DrawCard();
+                newCard.Flip();
+                hand.AddCard(newCard);
             }
 
             Dealer.Deal(Shoe);
@@ -62,7 +71,7 @@ namespace OOPBlackJack.Models
             {
                 var hand = player.Hands[0];
 
-                while (hand.GetValue() < 21)
+                while (hand.GetValue() < 16)
                 {
                     if(hand.GetValue() == 11)
                     {
@@ -79,7 +88,7 @@ namespace OOPBlackJack.Models
         {
             if (State != GameState.DEALERTURN) return;
 
-            Dealer.Hand.AddCard(Shoe.DrawCard());
+            Dealer.Hit(Shoe);
 
             if (Dealer.Hand.IsBusted())
             {
