@@ -1,101 +1,139 @@
+using OOPBlackJack.Enums;
 using OOPBlackJack.Models;
-using System.Diagnostics;
+using System;
+using System.Drawing;
+using System.IO;
+using System.Windows.Forms;
+using System.Xml;
 
 namespace OOPBlackJack
 {
     public partial class Form1 : Form
     {
-        private Deck deck;
-        private Shoe shoe;
+        private Table table;
 
         public Form1()
         {
             InitializeComponent();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        //START GAME
+        private void buttonStart_Click(object sender, EventArgs e)
         {
-            // Vraag gebruiker om aantal decks
-            string input = Microsoft.VisualBasic.Interaction.InputBox(
-                "Hoeveel decks wil je in de shoe?",
-                "Aantal decks");
-
-            // Controleer of de gebruiker Cancel heeft geklikt of niets heeft ingevuld
-            if (string.IsNullOrWhiteSpace(input))
+            string inputPlayers = Microsoft.VisualBasic.Interaction.InputBox("Aantal spelers (1-4)", "Start spel");
+            if (!int.TryParse(inputPlayers, out int players) || players < 1 || players > 4)
             {
-                MessageBox.Show("Shoe is niet aangemaakt.");
+                MessageBox.Show("Ongeldig aantal spelers");
                 return;
             }
 
-            if (!int.TryParse(input, out int numberOfDecks) || numberOfDecks < 1)
+            string inputDecks = Microsoft.VisualBasic.Interaction.InputBox("Aantal decks", "Shoe");
+            if (!int.TryParse(inputDecks, out int decks) || decks < 1)
             {
-                MessageBox.Show("Ongeldig aantal decks. Er wordt geen shoe aangemaakt.");
-                return; 
+                MessageBox.Show("Ongeldig aantal decks");
+                return;
             }
 
-            try
+            table = new Table(decks, players);
+
+            table.StartRound();
+
+            DisplayAll();
+            UpdateTitle();
+        }
+
+        private void buttonHit_Click(object sender, EventArgs e)
+        {
+            if (table == null || table.State != GameState.DEALERTURN) return;
+
+            table.DealerHit();
+
+            DisplayAll();
+            UpdateTitle();
+        }
+
+        private void buttonStand_Click(object sender, EventArgs e)
+        {
+            if (table == null || table.State != GameState.DEALERTURN) return;
+
+            table.DealerStand();
+
+            DisplayAll();
+            UpdateTitle();
+
+            MessageBox.Show(table.GetResults());
+        }
+
+        private void buttonFlip_Click(object sender, EventArgs e)
+        {
+            if (table == null || table.Dealer.Hand.Cards.Count < 2) return;
+
+            table.Dealer.FlipSecondCard();
+
+            DisplayAll();
+        }
+
+        //UI UPDATE
+        private void DisplayAll()
+        {
+            if (table == null) return;
+
+            FlowLayoutPanel[] panels =
             {
-                shoe = new Shoe(numberOfDecks);
-                MessageBox.Show($"Shoe gemaakt met {shoe.CardsRemaining()} kaarten ({numberOfDecks} decks)");
+                flowLayoutPanel1,
+                flowLayoutPanel2,
+                flowLayoutPanel3,
+                flowLayoutPanel4,
+            };
+
+            for (int i = 0; i < table.Players.Count; i++)
+            {
+                panels[i].Controls.Clear();
+                foreach (var card in table.Players[i].Hands[0].Cards)
+                {
+                    panels[i].Controls.Add(CreateCard(card));
+                }
             }
-            catch (Exception ex)
+
+            flowLayoutPanelDealer.Controls.Clear();
+            foreach (var card in table.Dealer.Hand.Cards)
             {
-                MessageBox.Show($"Fout bij aanmaken shoe: {ex.Message}");
+                flowLayoutPanelDealer.Controls.Add(CreateCard(card));
             }
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private PictureBox CreateCard(Card card)
         {
-            if (shoe == null)
+            PictureBox pb = new PictureBox
             {
-                MessageBox.Show("Maak eerst een shoe.");
-                return;
+                Width = 80,
+                Height = 120,
+                SizeMode = PictureBoxSizeMode.StretchImage
+            };
+
+            string path = card.IsFaceUp ? card.ImagePath : "PNG-cards-1.3/face_down.png";
+
+            if (File.Exists(path))
+            {
+                pb.Image = Image.FromFile(path);
+            }
+            else
+            {
+                pb.BackColor = Color.Green;
             }
 
-            if (shoe.CardsRemaining() == 0)
-            {
-                MessageBox.Show("Geen kaarten meer in de shoe.");
-                return;
-            }
-
-            Card card = shoe.DrawCard();
-            string path = card.ImagePath;
-
-            Debug.WriteLine($"Full path: {Path.GetFullPath(path)}");
-
-            MessageBox.Show($"Je trok: {card.Rank} van {card.Suit} (waarde {card.Value})");
-
-            try
-            {
-                if (File.Exists(path))
-                {
-                    pictureBox1.Image = Image.FromFile(path);
-                }
-                else
-                {
-                    MessageBox.Show($"Afbeelding niet gevonden\nPad:\n{path}");
-                    pictureBox1.Image = null;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Afbeelding niet gevonden\n\nPad:\n{path}\n\nError:\n{ex.Message}");
-                pictureBox1.Image = null;
-            }
+            return pb;
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void UpdateTitle()
         {
-            if (shoe == null)
-            {
-                MessageBox.Show("Maak eerst een shoe.");
-                return;
-            }
+            if (table == null) return;
 
-            shoe.Shuffle();
+            string player = table.GetActivePlayer() != null
+                ? table.GetActivePlayer().Name
+                : "Dealer";
 
-            Card topCard = shoe.Cards[0];
-            MessageBox.Show($"Shoe geschud\nBovenste kaart is nu: {topCard.Rank} van {topCard.Suit}.");
+            this.Text = $"Speler: {player} | State: {table.State} | Punten: {table.Points}";
         }
     }
 }
