@@ -25,6 +25,7 @@
             flowLayoutPanel3 = new FlowLayoutPanel();
             flowLayoutPanel4 = new FlowLayoutPanel();
             buttonFlip = new Button();
+            buttonNewRound = new Button();
             SuspendLayout();
             // 
             // buttonStart
@@ -107,6 +108,16 @@
             buttonFlip.UseVisualStyleBackColor = true;
             buttonFlip.Click += buttonFlip_Click;
             // 
+            // buttonNewRound
+            // 
+            buttonNewRound.Location = new Point(824, 530);
+            buttonNewRound.Name = "buttonNewRound";
+            buttonNewRound.Size = new Size(150, 45);
+            buttonNewRound.TabIndex = 10;
+            buttonNewRound.Text = "NewRound";
+            buttonNewRound.UseVisualStyleBackColor = true;
+            buttonNewRound.Click += buttonNewRound_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -114,6 +125,7 @@
             BackColor = Color.ForestGreen;
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             ClientSize = new Size(1218, 629);
+            Controls.Add(buttonNewRound);
             Controls.Add(buttonFlip);
             Controls.Add(flowLayoutPanel4);
             Controls.Add(flowLayoutPanel3);
@@ -138,5 +150,6 @@
         private FlowLayoutPanel flowLayoutPanel3;
         private FlowLayoutPanel flowLayoutPanel4;
         private Button buttonFlip;
+        private Button buttonNewRound;
     }
 }
