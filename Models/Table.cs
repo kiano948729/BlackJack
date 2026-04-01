@@ -65,6 +65,12 @@ namespace OOPBlackJack.Models
             State = GameState.DEALERTURN;
         }
 
+        public void NewRound()
+        {
+            if (State != GameState.ROUNDFINISHED) return;
+            StartRound();
+        }
+
         private void PlayPlayers()
         {
             foreach (var player in Players)

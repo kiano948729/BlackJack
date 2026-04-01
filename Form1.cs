@@ -15,6 +15,8 @@ namespace OOPBlackJack
         public Form1()
         {
             InitializeComponent();
+
+            buttonNewRound.Visible = false;
         }
 
         //START GAME
@@ -50,6 +52,8 @@ namespace OOPBlackJack
 
             DisplayAll();
             UpdateTitle();
+
+            CheckEndRound();
         }
 
         private void buttonStand_Click(object sender, EventArgs e)
@@ -61,7 +65,7 @@ namespace OOPBlackJack
             DisplayAll();
             UpdateTitle();
 
-            MessageBox.Show(table.GetResults());
+            CheckEndRound();
         }
 
         private void buttonFlip_Click(object sender, EventArgs e)
@@ -71,6 +75,22 @@ namespace OOPBlackJack
             table.Dealer.FlipSecondCard();
 
             DisplayAll();
+        }
+
+        private void buttonNewRound_Click(object sender, EventArgs e)
+        {
+            if (table == null)
+            {
+                MessageBox.Show("Start eerst een game");
+                return;
+            }
+
+            table.NewRound();
+
+            buttonNewRound.Visible = false;
+
+            DisplayAll();
+            UpdateTitle();
         }
 
         //UI UPDATE
@@ -134,6 +154,14 @@ namespace OOPBlackJack
                 : "Dealer";
 
             this.Text = $"Speler: {player} | State: {table.State} | Punten: {table.Points}";
+        }
+        private void CheckEndRound()
+        {
+            if (table.State == GameState.ROUNDFINISHED)
+            {
+                MessageBox.Show(table.GetResults());
+                buttonNewRound.Visible = true;
+            }
         }
     }
 }
