@@ -106,9 +106,14 @@ namespace OOPBlackJack
                 flowLayoutPanel4,
             };
 
+            //panels leegmaken
+            foreach (var panel in panels)
+            {
+                panel.Controls.Clear();
+            }
+
             for (int i = 0; i < table.Players.Count; i++)
             {
-                panels[i].Controls.Clear();
                 foreach (var card in table.Players[i].Hands[0].Cards)
                 {
                     panels[i].Controls.Add(CreateCard(card));
