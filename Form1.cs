@@ -114,9 +114,44 @@ namespace OOPBlackJack
 
             for (int i = 0; i < table.Players.Count; i++)
             {
-                foreach (var card in table.Players[i].Hands[0].Cards)
+                var player = table.Players[i];
+
+                for (int h = 0; h < player.Hands.Count; h++)
                 {
-                    panels[i].Controls.Add(CreateCard(card));
+                    var hand = player.Hands[h];
+
+                    FlowLayoutPanel handPanel = new FlowLayoutPanel
+                    {
+                        AutoSize = true,
+                        FlowDirection = FlowDirection.LeftToRight,
+                        WrapContents = false,
+                        Margin = new Padding(0, 0, 5, 0),
+                        Padding = new Padding(2),
+                        BackColor = (table.ActivePlayerIndex == i && table.ActiveHandIndex == h)
+                            ? Color.LightGoldenrodYellow //highlight actieve hand
+                            : Color.Transparent,
+                        BorderStyle = BorderStyle.FixedSingle
+                    };
+
+                    //kaarten toevoegen aan handPanel
+                    foreach (var card in hand.Cards)
+                    {
+                        handPanel.Controls.Add(CreateCard(card));
+                    }
+
+                    panels[i].Controls.Add(handPanel);
+
+                    if (h < player.Hands.Count - 1)
+                    {
+                        panels[i].Controls.Add(new Label()
+                        {
+                            Text = "  |  ", //kleine scheiding tussen handen
+                            AutoSize = true,
+                            Font = new Font("Arial", 14, FontStyle.Bold),
+                            TextAlign = ContentAlignment.MiddleCenter,
+                            Margin = new Padding(3, 0, 3, 0)
+                        });
+                    }
                 }
             }
 
@@ -131,9 +166,12 @@ namespace OOPBlackJack
         {
             PictureBox pb = new PictureBox
             {
-                Width = 80,
-                Height = 120,
-                SizeMode = PictureBoxSizeMode.StretchImage
+                Width = 60, 
+                Height = 90,
+                SizeMode = PictureBoxSizeMode.StretchImage,
+                Margin = new Padding(2),
+                BorderStyle = BorderStyle.FixedSingle,
+                BackColor = Color.White
             };
 
             string path = card.IsFaceUp ? card.ImagePath : "PNG-cards-1.3/face_down.png";
@@ -167,6 +205,42 @@ namespace OOPBlackJack
                 MessageBox.Show(table.GetResults());
                 buttonNewRound.Visible = true;
             }
+        }
+
+        private void buttonPLayerHit_Click(object sender, EventArgs e)
+        {
+            if (table == null) return;
+
+            table.PlayerHit();
+            DisplayAll();
+            UpdateTitle();
+        }
+
+        private void buttonPlayerStand_Click(object sender, EventArgs e)
+        {
+            if (table == null) return;
+
+            table.PlayerStand();
+            DisplayAll();
+            UpdateTitle();
+        }
+
+        private void buttonPlayerDouble_Click(object sender, EventArgs e)
+        {
+            if (table == null) return;
+
+            table.PlayerDouble();
+            DisplayAll();
+            UpdateTitle();
+        }
+
+        private void buttonPlayerSplit_Click(object sender, EventArgs e)
+        {
+            if (table == null) return;
+
+            table.PlayerSplit();
+            DisplayAll();
+            UpdateTitle();
         }
     }
 }
