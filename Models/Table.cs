@@ -13,6 +13,8 @@ namespace OOPBlackJack.Models
         public GameState State { get; private set; }
         public int Points { get; private set; }
 
+        public int ActivePlayerIndex { get; private set; }
+        public int ActiveHandIndex { get; private set; }
 
         public Table(int shoeSize, int amountPlayers)
         {
@@ -25,69 +27,142 @@ namespace OOPBlackJack.Models
 
             for (int i = 0; i < amountPlayers; i++)
             {
-                Player player = new Player($"Speler {i + 1}", 100);
+                var player = new Player($"Speler {i + 1}", 100);
                 player.AddHand(new Hand(10));
                 Players.Add(player);
             }
 
             State = GameState.WAITING;
-            Points = 0;
         }
 
         public void StartRound()
         {
             Dealer.Reset();
+            ActivePlayerIndex = 0;
+            ActiveHandIndex = 0;
 
             foreach (var player in Players)
             {
                 player.Hands.Clear();
-
-                Hand hand = new Hand(10);
+                var hand = new Hand(10);
                 player.AddHand(hand);
 
-                var card1 = Shoe.DrawCard();
-                card1.Flip();
-                hand.AddCard(card1);
+                var c1 = Shoe.DrawCard(); c1.Flip();
+                var c2 = Shoe.DrawCard(); c2.Flip();
 
-                var card2 = Shoe.DrawCard();
-                card2.Flip();
-                hand.AddCard(card2);
-
-                var newCard = Shoe.DrawCard();
-                newCard.Flip();
-                hand.AddCard(newCard);
+                hand.AddCard(c1);
+                hand.AddCard(c2);
             }
 
             Dealer.Deal(Shoe);
 
-            PlayPlayers(); 
-
-            State = GameState.DEALERTURN;
+            State = GameState.PLAYERTURN;
         }
 
-        public void NewRound()
+        public Player GetActivePlayer()
         {
-            if (State != GameState.ROUNDFINISHED) return;
-            StartRound();
+            if (ActivePlayerIndex < Players.Count)
+                return Players[ActivePlayerIndex];
+
+            return null;
         }
 
-        private void PlayPlayers()
+        public void NextPlayer()
         {
-            foreach (var player in Players)
+            ActivePlayerIndex++;
+
+            if (ActivePlayerIndex >= Players.Count)
             {
-                var hand = player.Hands[0];
-
-                while (hand.GetValue() < 16)
-                {
-                    if(hand.GetValue() == 11)
-                    {
-
-                    }
-                    hand.AddCard(Shoe.DrawCard());
-                }
-
-                hand.Stand();
+                State = GameState.DEALERTURN;
             }
+        }
+
+        public void PlayerHit()
+        {
+            if (State != GameState.PLAYERTURN) return;
+
+            var hand = GetActiveHand();
+            if (hand == null) return;
+
+            var card = Shoe.DrawCard();
+            card.Flip();
+            hand.AddCard(card);
+
+            if (hand.IsBusted())
+            {
+                hand.Stand(); //direct stand bij busted
+                NextHand();
+            }
+        }
+
+        public void PlayerStand()
+        {
+            if (State != GameState.PLAYERTURN) return;
+
+            var hand = GetActiveHand();
+            if (hand == null) return;
+
+            hand.Stand();
+            NextHand();
+        }
+
+        private void NextHand()
+        {
+            var player = GetActivePlayer();
+            if (player == null) return;
+
+            ActiveHandIndex++;
+
+            if (ActiveHandIndex >= player.Hands.Count)
+            {
+                ActiveHandIndex = 0;
+                NextPlayer();
+            }
+        }
+
+        public void PlayerDouble()
+        {
+            if (State != GameState.PLAYERTURN) return;
+
+            var hand = GetActiveHand();
+            if (hand == null) return;
+
+            var card = Shoe.DrawCard();
+            card.Flip();
+
+            hand.DoubleDown(card, hand.Bet);
+            NextHand();
+        }
+
+        public void PlayerSplit()
+        {
+            if (State != GameState.PLAYERTURN) return;
+
+            var player = GetActivePlayer();
+            if (player == null) return;
+
+            player.Split(ActiveHandIndex);
+
+            //nieuwe kaarten uitdelen aan gesplitte hands
+            var hand = GetActiveHand();
+            if (hand.Cards.Count == 1)
+            {
+                var card = Shoe.DrawCard();
+                card.Flip();
+                hand.AddCard(card);
+            }
+        }
+
+        public Hand GetActiveHand()
+        {
+            var player = GetActivePlayer();
+
+            if (player == null) return null;
+
+            if (ActiveHandIndex < player.Hands.Count)
+                return player.Hands[ActiveHandIndex];
+
+            return null;
         }
 
         public void DealerHit()
@@ -98,8 +173,7 @@ namespace OOPBlackJack.Models
 
             if (Dealer.Hand.IsBusted())
             {
-                State = GameState.ROUNDFINISHED;
-                CheckResults();
+                EndRound();
             }
         }
 
@@ -107,6 +181,11 @@ namespace OOPBlackJack.Models
         {
             if (State != GameState.DEALERTURN) return;
 
+            EndRound();
+        }
+
+        private void EndRound()
+        {
             State = GameState.ROUNDFINISHED;
             CheckResults();
         }
@@ -118,77 +197,66 @@ namespace OOPBlackJack.Models
 
             foreach (var player in Players)
             {
-                var hand = player.Hands[0];
-
-                if (hand.IsBusted())
+                foreach (var hand in player.Hands)
                 {
-                    Points += 1;
-                }
-                else if (dealerBusted)
-                {
-                    Points -= 1;
-                }
-                else if (dealerTotal > hand.GetValue())
-                {
-                    Points += 1;
-                }
-                else if (dealerTotal < hand.GetValue())
-                {
-                    Points -= 1;
+                    if (hand.IsBusted())
+                    {
+                        Points += 1;
+                    }
+                    else if (dealerBusted)
+                    {
+                        Points -= 1;
+                    }
+                    else if (dealerTotal > hand.GetValue())
+                    {
+                        Points += 1;
+                    }
+                    else if (dealerTotal < hand.GetValue())
+                    {
+                        Points -= 1;
+                    }
                 }
             }
+        }
+
+        public void NewRound()
+        {
+            if (State != GameState.ROUNDFINISHED) return;
+            StartRound();
         }
 
         public string GetResults()
         {
             string results = "";
             int dealerValue = Dealer.Hand.GetValue();
-            bool dealerBusted = Dealer.Hand.IsBusted();
 
             foreach (var player in Players)
             {
-                var hand = player.Hands[0];
-                int playerValue = hand.GetValue();
+                for (int h = 0; h < player.Hands.Count; h++)
+                {
+                    var hand = player.Hands[h];
+                    int val = hand.GetValue();
 
-                string result;
+                    string result;
+                    if (hand.IsBusted())
+                        result = "verliest (busted)";
+                    else if (Dealer.Hand.IsBusted())
+                        result = "wint (dealer busted)";
+                    else if (dealerValue > val)
+                        result = "verliest";
+                    else if (dealerValue < val)
+                        result = "wint";
+                    else
+                        result = "gelijkspel";
 
-                if (hand.IsBusted())
-                    result = "verliest (busted)";
-                else if (dealerBusted)
-                    result = "wint (dealer busted)";
-                else if (dealerValue > playerValue)
-                    result = "verliest";
-                else if (dealerValue < playerValue)
-                    result = "wint";
-                else
-                    result = "gelijkspel";
-
-                results += $"{player.Name}: {playerValue} -> {result}\n";
+                    //toon handnummer bij meerdere handen
+                    string handLabel = player.Hands.Count > 1 ? $"Hand {h + 1}" : "";
+                    results += $"{player.Name} {handLabel}: {val} -> {result}\n";
+                }
             }
 
             results += $"\nDealer: {dealerValue}";
             return results;
-        }
-
-        public void Reset()
-        {
-            Shoe = new Shoe(1);
-            Dealer.Reset();
-            Players.Clear();
-
-            State = GameState.WAITING;
-            Points = 0;
-        }
-
-        public Player GetActivePlayer()
-        {
-            if (State == GameState.DEALERTURN)
-                return null;
-
-            if (Players.Count > 0)
-                return Players[0]; 
-
-            return null;
         }
     }
 }
