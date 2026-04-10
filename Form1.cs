@@ -230,7 +230,7 @@ namespace OOPBlackJack
             if (table == null) return;
 
             string player = table.GetActivePlayer() != null
-                ? table.GetActivePlayer().Name
+                ? table.GetActivePlayer().Name + $" (Balance: {table.GetActivePlayer().Balance})"
                 : "Dealer";
 
             this.Text = $"Speler: {player} | State: {table.State} | Punten: {table.Points}";
@@ -239,7 +239,16 @@ namespace OOPBlackJack
         {
             if (table.State == GameState.ROUNDFINISHED)
             {
-                MessageBox.Show(table.GetResults());
+                ResultsForm form = new ResultsForm();
+
+                form.LoadResults(
+                    table.Players,
+                    table.Dealer.Hand.GetValue(),
+                    table.Dealer.Hand.IsBusted()
+                );
+
+                form.ShowDialog();
+
                 buttonNewRound.Visible = true;
             }
         }
