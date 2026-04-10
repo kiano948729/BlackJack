@@ -5,18 +5,39 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml;
-
+using Timer = System.Windows.Forms.Timer;
 namespace OOPBlackJack
 {
     public partial class Form1 : Form
     {
         private Table table;
+        private Label labelDealerFeedback;
+        private Timer feedbackTimer;
 
         public Form1()
         {
             InitializeComponent();
 
             buttonNewRound.Visible = false;
+
+            labelDealerFeedback = new Label
+            {
+                AutoSize = true,
+                Font = new Font("Arial", 12, FontStyle.Bold),
+                ForeColor = Color.Black,
+                Text = "",
+                Margin = new Padding(10)
+            };
+            this.Controls.Add(labelDealerFeedback);
+
+            //timer om feedback te verbergen na 3 seconden
+            feedbackTimer = new Timer();
+            feedbackTimer.Interval = 4000; 
+            feedbackTimer.Tick += (s, e) =>
+            {
+                labelDealerFeedback.Text = "";
+                feedbackTimer.Stop();
+            };
         }
 
         //START GAME
@@ -48,7 +69,12 @@ namespace OOPBlackJack
         {
             if (table == null || table.State != GameState.DEALERTURN) return;
 
+            int dealerValue = table.Dealer.Hand.GetValue();
+            bool correctChoice = dealerValue < 17;
+
             table.DealerHit();
+
+            ShowDealerFeedback(correctChoice);
 
             DisplayAll();
             UpdateTitle();
@@ -60,7 +86,12 @@ namespace OOPBlackJack
         {
             if (table == null || table.State != GameState.DEALERTURN) return;
 
+            int dealerValue = table.Dealer.Hand.GetValue();
+            bool correctChoice = dealerValue >= 17;
+            
             table.DealerStand();
+
+            ShowDealerFeedback(correctChoice);
 
             DisplayAll();
             UpdateTitle();
@@ -156,6 +187,12 @@ namespace OOPBlackJack
             }
 
             flowLayoutPanelDealer.Controls.Clear();
+
+            //highlight de dealer wanneer het dealer zijn beurt is
+            flowLayoutPanelDealer.BackColor = table.State == GameState.DEALERTURN
+                ? Color.LightGoldenrodYellow
+                : Color.Transparent;
+
             foreach (var card in table.Dealer.Hand.Cards)
             {
                 flowLayoutPanelDealer.Controls.Add(CreateCard(card));
@@ -241,6 +278,22 @@ namespace OOPBlackJack
             table.PlayerSplit();
             DisplayAll();
             UpdateTitle();
+        }
+
+        private void ShowDealerFeedback(bool correct)
+        {
+            labelDealerFeedback.Text = correct
+                ? "Dealer maakte een goede keuze!"
+                : "Dealer maakte een foute keuze!";
+
+            labelDealerFeedback.ForeColor = correct
+                ? Color.LimeGreen
+                : Color.DarkRed;
+
+            labelDealerFeedback.BackColor = Color.Transparent;
+
+            feedbackTimer.Stop();
+            feedbackTimer.Start();
         }
     }
 }
