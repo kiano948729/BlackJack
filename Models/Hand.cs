@@ -72,5 +72,9 @@
         {
             return GetValue() > 21;
         }
+        public void SetBet(int amount)
+        {
+            Bet = amount;
+        }
     }
 }

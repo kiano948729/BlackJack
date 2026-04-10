@@ -44,7 +44,14 @@ namespace OOPBlackJack.Models
             foreach (var player in Players)
             {
                 player.Hands.Clear();
-                var hand = new Hand(10);
+                var hand = new Hand();
+                int betAmount = 10;
+
+                if (player.CanBet(betAmount))
+                {
+                    player.PlaceBet(hand, betAmount);
+                }
+
                 player.AddHand(hand);
 
                 var c1 = Shoe.DrawCard(); c1.Flip();
@@ -221,6 +228,8 @@ namespace OOPBlackJack.Models
             {
                 foreach (var hand in player.Hands)
                 {
+                    if (hand.Bet == 0) continue;
+
                     if (hand.IsBusted())
                     {
                         Points += 1;
@@ -228,14 +237,20 @@ namespace OOPBlackJack.Models
                     else if (dealerBusted)
                     {
                         Points -= 1;
+                        player.WinBet(hand.Bet);
                     }
                     else if (dealerTotal > hand.GetValue())
                     {
                         Points += 1;
+                        player.WinBet(hand.Bet);
                     }
                     else if (dealerTotal < hand.GetValue())
                     {
                         Points -= 1;
+                    }
+                    else
+                    {
+                        player.PushBet(hand.Bet);
                     }
                 }
             }
@@ -251,30 +266,55 @@ namespace OOPBlackJack.Models
         {
             string results = "";
             int dealerValue = Dealer.Hand.GetValue();
+            bool dealerBusted = Dealer.Hand.IsBusted();
 
             foreach (var player in Players)
             {
+                results += $"\n{player.Name} (Balance: {player.Balance})\n";
+
                 for (int h = 0; h < player.Hands.Count; h++)
                 {
                     var hand = player.Hands[h];
                     int val = hand.GetValue();
 
+                    int bet = hand.Bet;
+
                     string result;
+                    int winLoss = 0;
+
                     if (hand.IsBusted())
+                    {
                         result = "verliest (busted)";
-                    else if (Dealer.Hand.IsBusted())
+                        winLoss = -bet;
+                    }
+                    else if (dealerBusted)
+                    {
                         result = "wint (dealer busted)";
-                    else if (dealerValue > val)
-                        result = "verliest";
-                    else if (dealerValue < val)
+                        winLoss = bet;
+                    }
+                    else if (val > dealerValue)
+                    {
                         result = "wint";
+                        winLoss = bet;
+                    }
+                    else if (val < dealerValue)
+                    {
+                        result = "verliest";
+                        winLoss = -bet;
+                    }
                     else
+                    {
                         result = "gelijkspel";
+                        winLoss = 0;
+                    }
 
                     //toon handnummer bij meerdere handen
                     string handLabel = player.Hands.Count > 1 ? $"Hand {h + 1}" : "";
-                    results += $"{player.Name} {handLabel}: {val} -> {result}\n";
+
+                    results += $"{handLabel}: {val} -> {result} ({winLoss:+0;-0;0})\n";
                 }
+
+                results += $"Saldo na ronde: {player.Balance}\n";
             }
 
             results += $"\nDealer: {dealerValue}";

@@ -19,6 +19,29 @@
             Hands.Add(hand);
         }
 
+        public bool CanBet(int amount)
+        {
+            return amount > 0 && amount <= Balance;
+        }
+
+        public void PlaceBet(Hand hand, int amount)
+        {
+            if (!CanBet(amount)) return;
+
+            hand.SetBet(amount);
+            Balance -= amount;
+        }
+
+        public void WinBet(int amount)
+        {
+            Balance += amount * 2;
+        }
+
+        public void PushBet(int amount)
+        {
+            Balance += amount;
+        }
+
         public void Split(int handIdx)
         {
             var hand = Hands[handIdx];
