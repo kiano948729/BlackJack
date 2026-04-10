@@ -169,6 +169,17 @@ namespace OOPBlackJack.Models
         {
             if (State != GameState.DEALERTURN) return;
 
+            int dealerValue = Dealer.Hand.GetValue();
+
+            if (dealerValue < 17)
+            {
+                Points += 1;
+            }
+            else
+            {
+                Points -= 1;
+            }
+
             Dealer.Hit(Shoe);
 
             if (Dealer.Hand.IsBusted())
@@ -180,6 +191,17 @@ namespace OOPBlackJack.Models
         public void DealerStand()
         {
             if (State != GameState.DEALERTURN) return;
+
+            int dealerValue = Dealer.Hand.GetValue();
+
+            if (dealerValue >= 17)
+            {
+                Points += 1;
+            }
+            else
+            {
+                Points -= 1;
+            }
 
             EndRound();
         }
