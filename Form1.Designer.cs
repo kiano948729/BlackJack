@@ -30,6 +30,7 @@
             buttonPlayerStand = new Button();
             buttonPlayerDouble = new Button();
             buttonPlayerSplit = new Button();
+            buttonPlayerInsurance = new Button();
             SuspendLayout();
             // 
             // buttonStart
@@ -162,6 +163,16 @@
             buttonPlayerSplit.UseVisualStyleBackColor = true;
             buttonPlayerSplit.Click += buttonPlayerSplit_Click;
             // 
+            // buttonPlayerInsurance
+            // 
+            buttonPlayerInsurance.Location = new Point(498, 25);
+            buttonPlayerInsurance.Name = "buttonPlayerInsurance";
+            buttonPlayerInsurance.Size = new Size(107, 33);
+            buttonPlayerInsurance.TabIndex = 15;
+            buttonPlayerInsurance.Text = "PlayerInsurance";
+            buttonPlayerInsurance.UseVisualStyleBackColor = true;
+            buttonPlayerInsurance.Click += buttonPlayerInsurance_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -169,6 +180,7 @@
             BackColor = Color.ForestGreen;
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             ClientSize = new Size(1218, 629);
+            Controls.Add(buttonPlayerInsurance);
             Controls.Add(buttonPlayerSplit);
             Controls.Add(buttonPlayerDouble);
             Controls.Add(buttonPlayerStand);
@@ -203,5 +215,6 @@
         private Button buttonPlayerStand;
         private Button buttonPlayerDouble;
         private Button buttonPlayerSplit;
+        private Button buttonPlayerInsurance;
     }
 }

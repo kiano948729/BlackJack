@@ -85,5 +85,17 @@
             InsuranceBet = amount;
             Balance -= amount;
         }
+        public void ResolveInsurance(bool dealerHasBlackjack)
+        {
+            if (InsuranceBet == 0) return;
+
+            if (dealerHasBlackjack)
+            {
+                Balance += InsuranceBet * 3;
+                //+2 winst + originele insurance terug = 3x
+            }
+
+            InsuranceBet = 0;
+        }
     }
 }
