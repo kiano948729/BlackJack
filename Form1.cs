@@ -5,18 +5,39 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml;
-
+using Timer = System.Windows.Forms.Timer;
 namespace OOPBlackJack
 {
     public partial class Form1 : Form
     {
         private Table table;
+        private Label labelDealerFeedback;
+        private Timer feedbackTimer;
 
         public Form1()
         {
             InitializeComponent();
 
             buttonNewRound.Visible = false;
+
+            labelDealerFeedback = new Label
+            {
+                AutoSize = true,
+                Font = new Font("Arial", 12, FontStyle.Bold),
+                ForeColor = Color.Black,
+                Text = "",
+                Margin = new Padding(10)
+            };
+            this.Controls.Add(labelDealerFeedback);
+
+            //timer om feedback te verbergen na 3 seconden
+            feedbackTimer = new Timer();
+            feedbackTimer.Interval = 4000;
+            feedbackTimer.Tick += (s, e) =>
+            {
+                labelDealerFeedback.Text = "";
+                feedbackTimer.Stop();
+            };
         }
 
         //START GAME
@@ -48,7 +69,12 @@ namespace OOPBlackJack
         {
             if (table == null || table.State != GameState.DEALERTURN) return;
 
+            int dealerValue = table.Dealer.Hand.GetValue();
+            bool correctChoice = dealerValue < 17;
+
             table.DealerHit();
+
+            ShowDealerFeedback(correctChoice);
 
             DisplayAll();
             UpdateTitle();
@@ -60,7 +86,12 @@ namespace OOPBlackJack
         {
             if (table == null || table.State != GameState.DEALERTURN) return;
 
+            int dealerValue = table.Dealer.Hand.GetValue();
+            bool correctChoice = dealerValue >= 17;
+
             table.DealerStand();
+
+            ShowDealerFeedback(correctChoice);
 
             DisplayAll();
             UpdateTitle();
@@ -114,26 +145,72 @@ namespace OOPBlackJack
 
             for (int i = 0; i < table.Players.Count; i++)
             {
-                foreach (var card in table.Players[i].Hands[0].Cards)
+                var player = table.Players[i];
+
+                for (int h = 0; h < player.Hands.Count; h++)
                 {
-                    panels[i].Controls.Add(CreateCard(card));
+                    var hand = player.Hands[h];
+
+                    FlowLayoutPanel handPanel = new FlowLayoutPanel
+                    {
+                        AutoSize = true,
+                        FlowDirection = FlowDirection.LeftToRight,
+                        WrapContents = false,
+                        Margin = new Padding(0, 0, 5, 0),
+                        Padding = new Padding(2),
+                        BackColor = (table.ActivePlayerIndex == i && table.ActiveHandIndex == h)
+                            ? Color.LightGoldenrodYellow //highlight actieve hand
+                            : Color.Transparent,
+                        BorderStyle = BorderStyle.FixedSingle
+                    };
+
+                    //kaarten toevoegen aan handPanel
+                    foreach (var card in hand.Cards)
+                    {
+                        handPanel.Controls.Add(CreateCard(card));
+                    }
+
+                    panels[i].Controls.Add(handPanel);
+
+                    if (h < player.Hands.Count - 1)
+                    {
+                        panels[i].Controls.Add(new Label()
+                        {
+                            Text = "  |  ", //kleine scheiding tussen handen
+                            AutoSize = true,
+                            Font = new Font("Arial", 14, FontStyle.Bold),
+                            TextAlign = ContentAlignment.MiddleCenter,
+                            Margin = new Padding(3, 0, 3, 0)
+                        });
+                    }
                 }
             }
 
             flowLayoutPanelDealer.Controls.Clear();
+
+            //highlight de dealer wanneer het dealer zijn beurt is
+            flowLayoutPanelDealer.BackColor = table.State == GameState.DEALERTURN
+                ? Color.LightGoldenrodYellow
+                : Color.Transparent;
+
             foreach (var card in table.Dealer.Hand.Cards)
             {
                 flowLayoutPanelDealer.Controls.Add(CreateCard(card));
             }
+
+            buttonPlayerInsurance.Visible = table != null && table.CanOfferInsurance();
         }
 
         private PictureBox CreateCard(Card card)
         {
             PictureBox pb = new PictureBox
             {
-                Width = 80,
-                Height = 120,
-                SizeMode = PictureBoxSizeMode.StretchImage
+                Width = 60,
+                Height = 90,
+                SizeMode = PictureBoxSizeMode.StretchImage,
+                Margin = new Padding(2),
+                BorderStyle = BorderStyle.FixedSingle,
+                BackColor = Color.White
             };
 
             string path = card.IsFaceUp ? card.ImagePath : "PNG-cards-1.3/face_down.png";
@@ -155,7 +232,7 @@ namespace OOPBlackJack
             if (table == null) return;
 
             string player = table.GetActivePlayer() != null
-                ? table.GetActivePlayer().Name
+                ? table.GetActivePlayer().Name + $" (Balance: {table.GetActivePlayer().Balance})"
                 : "Dealer";
 
             this.Text = $"Speler: {player} | State: {table.State} | Punten: {table.Points}";
@@ -164,9 +241,86 @@ namespace OOPBlackJack
         {
             if (table.State == GameState.ROUNDFINISHED)
             {
-                MessageBox.Show(table.GetResults());
+                ResultsForm form = new ResultsForm();
+
+                form.LoadResults(
+                    table.Players,
+                    table.Dealer.Hand.GetValue(),
+                    table.Dealer.Hand.IsBusted()
+                );
+
+                form.ShowDialog();
+
                 buttonNewRound.Visible = true;
             }
+        }
+
+        private void buttonPLayerHit_Click(object sender, EventArgs e)
+        {
+            if (table == null) return;
+
+            table.PlayerHit();
+            DisplayAll();
+            UpdateTitle();
+        }
+
+        private void buttonPlayerStand_Click(object sender, EventArgs e)
+        {
+            if (table == null) return;
+
+            table.PlayerStand();
+            DisplayAll();
+            UpdateTitle();
+        }
+
+        private void buttonPlayerDouble_Click(object sender, EventArgs e)
+        {
+            if (table == null) return;
+
+            table.PlayerDouble();
+            DisplayAll();
+            UpdateTitle();
+        }
+
+        private void buttonPlayerSplit_Click(object sender, EventArgs e)
+        {
+            if (table == null) return;
+
+            table.PlayerSplit();
+            DisplayAll();
+            UpdateTitle();
+        }
+
+        private void buttonPlayerInsurance_Click(object sender, EventArgs e)
+        {
+            if (table == null) return;
+
+            var player = table.GetActivePlayer();
+            if (player == null) return;
+
+            int amount = 5;//vast bedrag voor verzekering, in de casus staat niks van custom bedrag :)
+
+            if (player.CanBet(amount))
+            {
+                player.PlaceInsurance(amount);
+                MessageBox.Show("Insurance geplaatst!");
+            }
+        }
+
+        private void ShowDealerFeedback(bool correct)
+        {
+            labelDealerFeedback.Text = correct
+                ? "Dealer maakte een goede keuze!"
+                : "Dealer maakte een foute keuze!";
+
+            labelDealerFeedback.ForeColor = correct
+                ? Color.LimeGreen
+                : Color.DarkRed;
+
+            labelDealerFeedback.BackColor = Color.Transparent;
+
+            feedbackTimer.Stop();
+            feedbackTimer.Start();
         }
     }
 }

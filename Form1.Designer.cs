@@ -26,6 +26,11 @@
             flowLayoutPanel4 = new FlowLayoutPanel();
             buttonFlip = new Button();
             buttonNewRound = new Button();
+            buttonPLayerHit = new Button();
+            buttonPlayerStand = new Button();
+            buttonPlayerDouble = new Button();
+            buttonPlayerSplit = new Button();
+            buttonPlayerInsurance = new Button();
             SuspendLayout();
             // 
             // buttonStart
@@ -61,9 +66,9 @@
             // flowLayoutPanel1
             // 
             flowLayoutPanel1.BackColor = Color.Transparent;
-            flowLayoutPanel1.Location = new Point(131, 256);
+            flowLayoutPanel1.Location = new Point(131, 189);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new Size(262, 120);
+            flowLayoutPanel1.Size = new Size(262, 187);
             flowLayoutPanel1.TabIndex = 3;
             // 
             // flowLayoutPanelDealer
@@ -71,31 +76,31 @@
             flowLayoutPanelDealer.BackColor = Color.Transparent;
             flowLayoutPanelDealer.Location = new Point(378, 382);
             flowLayoutPanelDealer.Name = "flowLayoutPanelDealer";
-            flowLayoutPanelDealer.Size = new Size(496, 142);
+            flowLayoutPanelDealer.Size = new Size(498, 120);
             flowLayoutPanelDealer.TabIndex = 8;
             // 
             // flowLayoutPanel2
             // 
             flowLayoutPanel2.BackColor = Color.Transparent;
-            flowLayoutPanel2.Location = new Point(399, 256);
+            flowLayoutPanel2.Location = new Point(399, 189);
             flowLayoutPanel2.Name = "flowLayoutPanel2";
-            flowLayoutPanel2.Size = new Size(262, 120);
+            flowLayoutPanel2.Size = new Size(262, 187);
             flowLayoutPanel2.TabIndex = 4;
             // 
             // flowLayoutPanel3
             // 
             flowLayoutPanel3.BackColor = Color.Transparent;
-            flowLayoutPanel3.Location = new Point(667, 256);
+            flowLayoutPanel3.Location = new Point(667, 189);
             flowLayoutPanel3.Name = "flowLayoutPanel3";
-            flowLayoutPanel3.Size = new Size(262, 120);
+            flowLayoutPanel3.Size = new Size(262, 187);
             flowLayoutPanel3.TabIndex = 5;
             // 
             // flowLayoutPanel4
             // 
             flowLayoutPanel4.BackColor = Color.Transparent;
-            flowLayoutPanel4.Location = new Point(935, 256);
+            flowLayoutPanel4.Location = new Point(935, 189);
             flowLayoutPanel4.Name = "flowLayoutPanel4";
-            flowLayoutPanel4.Size = new Size(262, 120);
+            flowLayoutPanel4.Size = new Size(262, 187);
             flowLayoutPanel4.TabIndex = 6;
             // 
             // buttonFlip
@@ -118,6 +123,56 @@
             buttonNewRound.UseVisualStyleBackColor = true;
             buttonNewRound.Click += buttonNewRound_Click;
             // 
+            // buttonPLayerHit
+            // 
+            buttonPLayerHit.Location = new Point(112, 25);
+            buttonPLayerHit.Name = "buttonPLayerHit";
+            buttonPLayerHit.Size = new Size(78, 33);
+            buttonPLayerHit.TabIndex = 11;
+            buttonPLayerHit.Text = "PlayerHit";
+            buttonPLayerHit.UseVisualStyleBackColor = true;
+            buttonPLayerHit.Click += buttonPLayerHit_Click;
+            // 
+            // buttonPlayerStand
+            // 
+            buttonPlayerStand.Location = new Point(196, 25);
+            buttonPlayerStand.Name = "buttonPlayerStand";
+            buttonPlayerStand.Size = new Size(78, 33);
+            buttonPlayerStand.TabIndex = 12;
+            buttonPlayerStand.Text = "PlayerStand";
+            buttonPlayerStand.UseVisualStyleBackColor = true;
+            buttonPlayerStand.Click += buttonPlayerStand_Click;
+            // 
+            // buttonPlayerDouble
+            // 
+            buttonPlayerDouble.Location = new Point(280, 25);
+            buttonPlayerDouble.Name = "buttonPlayerDouble";
+            buttonPlayerDouble.Size = new Size(94, 33);
+            buttonPlayerDouble.TabIndex = 13;
+            buttonPlayerDouble.Text = "PlayerDouble";
+            buttonPlayerDouble.UseVisualStyleBackColor = true;
+            buttonPlayerDouble.Click += buttonPlayerDouble_Click;
+            // 
+            // buttonPlayerSplit
+            // 
+            buttonPlayerSplit.Location = new Point(385, 25);
+            buttonPlayerSplit.Name = "buttonPlayerSplit";
+            buttonPlayerSplit.Size = new Size(107, 33);
+            buttonPlayerSplit.TabIndex = 14;
+            buttonPlayerSplit.Text = "PlayerSplit";
+            buttonPlayerSplit.UseVisualStyleBackColor = true;
+            buttonPlayerSplit.Click += buttonPlayerSplit_Click;
+            // 
+            // buttonPlayerInsurance
+            // 
+            buttonPlayerInsurance.Location = new Point(498, 25);
+            buttonPlayerInsurance.Name = "buttonPlayerInsurance";
+            buttonPlayerInsurance.Size = new Size(107, 33);
+            buttonPlayerInsurance.TabIndex = 15;
+            buttonPlayerInsurance.Text = "PlayerInsurance";
+            buttonPlayerInsurance.UseVisualStyleBackColor = true;
+            buttonPlayerInsurance.Click += buttonPlayerInsurance_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -125,6 +180,11 @@
             BackColor = Color.ForestGreen;
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             ClientSize = new Size(1218, 629);
+            Controls.Add(buttonPlayerInsurance);
+            Controls.Add(buttonPlayerSplit);
+            Controls.Add(buttonPlayerDouble);
+            Controls.Add(buttonPlayerStand);
+            Controls.Add(buttonPLayerHit);
             Controls.Add(buttonNewRound);
             Controls.Add(buttonFlip);
             Controls.Add(flowLayoutPanel4);
@@ -151,5 +211,10 @@
         private FlowLayoutPanel flowLayoutPanel4;
         private Button buttonFlip;
         private Button buttonNewRound;
+        private Button buttonPLayerHit;
+        private Button buttonPlayerStand;
+        private Button buttonPlayerDouble;
+        private Button buttonPlayerSplit;
+        private Button buttonPlayerInsurance;
     }
 }

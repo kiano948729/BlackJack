@@ -19,6 +19,36 @@
             Hands.Add(hand);
         }
 
+        public bool CanBet(int amount)
+        {
+            return amount > 0 && amount <= Balance;
+        }
+
+        public void PlaceBet(Hand hand, int amount)
+        {
+            if (!CanBet(amount)) return;
+
+            hand.SetBet(amount);
+            Balance -= amount;
+        }
+
+        public void SettleBet(Hand hand, int result)
+        {
+            //result:
+            //1 = win
+            //0 = push
+            //-1 = lose
+
+            if (result == 1)
+            {
+                Balance += hand.Bet * 2; //return bet + winst
+            }
+            else if (result == 0)
+            {
+                Balance += hand.Bet; 
+            }
+        }
+
         public void Split(int handIdx)
         {
             var hand = Hands[handIdx];
@@ -54,6 +84,18 @@
 
             InsuranceBet = amount;
             Balance -= amount;
+        }
+        public void ResolveInsurance(bool dealerHasBlackjack)
+        {
+            if (InsuranceBet == 0) return;
+
+            if (dealerHasBlackjack)
+            {
+                Balance += InsuranceBet * 3;
+                //+2 winst + originele insurance terug = 3x
+            }
+
+            InsuranceBet = 0;
         }
     }
 }
