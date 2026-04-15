@@ -32,14 +32,21 @@
             Balance -= amount;
         }
 
-        public void WinBet(int amount)
+        public void SettleBet(Hand hand, int result)
         {
-            Balance += amount * 2;
-        }
+            //result:
+            //1 = win
+            //0 = push
+            //-1 = lose
 
-        public void PushBet(int amount)
-        {
-            Balance += amount;
+            if (result == 1)
+            {
+                Balance += hand.Bet * 2; //return bet + winst
+            }
+            else if (result == 0)
+            {
+                Balance += hand.Bet; 
+            }
         }
 
         public void Split(int handIdx)

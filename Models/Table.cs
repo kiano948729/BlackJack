@@ -230,28 +230,30 @@ namespace OOPBlackJack.Models
                 {
                     if (hand.Bet == 0) continue;
 
+                    int result;
+
                     if (hand.IsBusted())
                     {
-                        Points += 1;
+                        result = -1;
                     }
                     else if (dealerBusted)
                     {
-                        Points -= 1;
-                        player.WinBet(hand.Bet);
+                        result = 1;
                     }
                     else if (dealerTotal > hand.GetValue())
                     {
-                        Points += 1;
-                        player.WinBet(hand.Bet);
+                        result = -1;
                     }
                     else if (dealerTotal < hand.GetValue())
                     {
-                        Points -= 1;
+                        result = 1;
                     }
                     else
                     {
-                        player.PushBet(hand.Bet);
+                        result = 0;
                     }
+
+                    player.SettleBet(hand, result);
                 }
             }
         }
