@@ -1,11 +1,12 @@
-﻿using System;
+﻿using OOPBlackJack.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
-using System.Drawing;
 using System.Windows.Forms;
 
 namespace OOPBlackJack
@@ -35,11 +36,12 @@ namespace OOPBlackJack
             grid.Columns.Add("value", "Waarde");
             grid.Columns.Add("result", "Resultaat");
             grid.Columns.Add("change", "Winst/Verlies");
+            grid.Columns.Add("balance", "saldo");
 
             this.Controls.Add(grid);
         }
 
-        public void LoadResults(dynamic players, int dealerValue, bool dealerBusted)
+        public void LoadResults(List<Player> players, int dealerValue, bool dealerBusted)
         {
             grid.Rows.Clear();
 
@@ -85,7 +87,8 @@ namespace OOPBlackJack
                         i + 1,
                         val,
                         result,
-                        change
+                        change,
+                        player.Balance
                     );
 
                     if (change > 0)
