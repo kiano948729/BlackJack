@@ -32,7 +32,7 @@ namespace OOPBlackJack
 
             //timer om feedback te verbergen na 3 seconden
             feedbackTimer = new Timer();
-            feedbackTimer.Interval = 4000; 
+            feedbackTimer.Interval = 4000;
             feedbackTimer.Tick += (s, e) =>
             {
                 labelDealerFeedback.Text = "";
@@ -88,7 +88,7 @@ namespace OOPBlackJack
 
             int dealerValue = table.Dealer.Hand.GetValue();
             bool correctChoice = dealerValue >= 17;
-            
+
             table.DealerStand();
 
             ShowDealerFeedback(correctChoice);
@@ -197,13 +197,15 @@ namespace OOPBlackJack
             {
                 flowLayoutPanelDealer.Controls.Add(CreateCard(card));
             }
+
+            buttonPlayerInsurance.Visible = table != null && table.CanOfferInsurance();
         }
 
         private PictureBox CreateCard(Card card)
         {
             PictureBox pb = new PictureBox
             {
-                Width = 60, 
+                Width = 60,
                 Height = 90,
                 SizeMode = PictureBoxSizeMode.StretchImage,
                 Margin = new Padding(2),
@@ -287,6 +289,22 @@ namespace OOPBlackJack
             table.PlayerSplit();
             DisplayAll();
             UpdateTitle();
+        }
+
+        private void buttonPlayerInsurance_Click(object sender, EventArgs e)
+        {
+            if (table == null) return;
+
+            var player = table.GetActivePlayer();
+            if (player == null) return;
+
+            int amount = 5;//vast bedrag voor verzekering, in de casus staat niks van custom bedrag :)
+
+            if (player.CanBet(amount))
+            {
+                player.PlaceInsurance(amount);
+                MessageBox.Show("Insurance geplaatst!");
+            }
         }
 
         private void ShowDealerFeedback(bool correct)

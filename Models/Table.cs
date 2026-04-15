@@ -63,6 +63,14 @@ namespace OOPBlackJack.Models
 
             Dealer.Deal(Shoe);
 
+            //na het delen van kaarten check DealerHasBlackjack
+            if (DealerHasBlackjack())
+            {
+                State = GameState.ROUNDFINISHED;
+                ResolveDealerBlackjack();
+                return;
+            }
+
             State = GameState.PLAYERTURN;
         }
 
@@ -321,6 +329,45 @@ namespace OOPBlackJack.Models
 
             results += $"\nDealer: {dealerValue}";
             return results;
+        }
+        public bool CanOfferInsurance()
+        {
+            return State == GameState.PLAYERTURN &&
+                   Dealer.Hand.Cards.Count > 0 &&
+                   Dealer.Hand.Cards[0].Rank == Rank.ACE;
+        }
+        public bool DealerHasBlackjack()
+        {
+            return Dealer.Hand.GetValue() == 21 && Dealer.Hand.Cards.Count == 2;
+        }
+
+        private void ResolveDealerBlackjack()
+        {
+            bool dealerBJ = true;
+
+            foreach (var player in Players)
+            {
+                player.ResolveInsurance(dealerBJ);
+
+                foreach (var hand in player.Hands)
+                {
+                    if (hand.Bet == 0) continue;
+
+                    int result;
+
+                    //speler blackjack vs dealer blackjack = PUSH
+                    if (hand.GetValue() == 21 && hand.Cards.Count == 2)
+                    {
+                        result = 0;
+                    }
+                    else
+                    {
+                        result = -1;
+                    }
+
+                    player.SettleBet(hand, result);
+                }
+            }
         }
     }
 }
